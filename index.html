@@ -4,106 +4,78 @@
 <head>
   <script type="text/javascript">
 
-   /**
-   * Sources:
-   * https://www.w3schools.com/howto/howto_js_filter_dropdown.asp
-   * function CSVToArray: https://stackoverflow.com/questions/1293147/javascript-code-to-parse-csv-data
-   * FileUpload: https://www.aspsnippets.com/Articles/Read-CSV-File-in-JavaScript-using-HTML5-File-API.aspx
-   * 
-   * 
-   **/
-
+    /**
+    * Sources:
+    * https://www.w3schools.com/howto/howto_js_filter_dropdown.asp
+    * FileUpload: https://www.aspsnippets.com/Articles/Read-CSV-File-in-JavaScript-using-HTML5-File-API.aspx
+    * 
+    * 
+    **/
 
     var arrElever = [[]];
     var arrElev = [[]];
 
-    function CSVToArray(strData, strDelimiter) {
-      // Check to see if the delimiter is defined. If not,
-      // then default to comma.
-      strDelimiter = (strDelimiter || ",");
-
+    function CSVToArray(strData) {
       // Create a regular expression to parse the CSV values.
-      var objPattern = new RegExp(
-        (
-          // Delimiters.
-          "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+      var objPatternLine = /(\w|\W)*?\"\r\n/g;
+      var objPatternField = /(\"[\w|\W]*?\"(,|\n|\r))|(.*?,)/g;
 
-          // Quoted fields.
-          "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
-
-          // Standard fields.
-          "([^\"\\" + strDelimiter + "\\r\\n]*))"
-        ),
-        "gi"
-      );
-
-
-      // Create an array to hold our data. Give the array
-      // a default empty first row.
       var arrData = [[]];
-
-      // Create an array to hold our individual pattern
-      // matching groups.
       var arrMatches = null;
+      console.log("hi");
 
+      var arrLines = [];
 
-      // Keep looping over the regular expression matches
-      // until we can no longer find a match.
-      while (arrMatches = objPattern.exec(strData)) {
+      arrLines = strData.match(objPatternLine);
 
-        // Get the delimiter that was found.
-        var strMatchedDelimiter = arrMatches[1];
-
-        // Check to see if the given delimiter has a length
-        // (is not the start of string) and if it matches
-        // field delimiter. If id does not, then we know
-        // that this delimiter is a row delimiter.
-        if (
-          strMatchedDelimiter.length &&
-          strMatchedDelimiter !== strDelimiter
-        ) {
-
-          // Since we have reached a new row of data,
-          // add an empty row to our data array.
-          arrData.push([]);
-
-        }
-
-        var strMatchedValue;
-
-        // Now that we have our delimiter out of the way,
-        // let's check to see which kind of value we
-        // captured (quoted or unquoted).
-        if (arrMatches[2]) {
-
-          // We found a quoted value. When we capture
-          // this value, unescape any double quotes.
-          strMatchedValue = arrMatches[2].replace(
-            new RegExp("\"\"", "g"),
-            "\""
-          );
-
-        } else {
-
-          // We found a non-quoted value.
-          strMatchedValue = arrMatches[3];
-
-        }
-
-
-        // Now that we have our value string, let's add
-        // it to the data array.
-        arrData[arrData.length - 1].push(strMatchedValue);
+      for (var i = 0; i < arrLines.length; i++) {
+        arrData[i] = arrLines[i].match(objPatternField);
       }
 
-      // Return the parsed data.
+      for (var i = 0; i < arrData.length; i++) {
+        for (var j = 0; j < arrData[i].length; j++) {
+          arrData[i][j] = arrData[i][j].trim();
+          arrData[i][j] = arrData[i][j].replace(/,+$/g, '');
+          arrData[i][j] = arrData[i][j].replace(/^\"+|\"+$/g, '');
+        }
+      }
       return (arrData);
     }
 
+    function populateArrows(n) {
+      //Left button
+      var l = n - 1;
+      if (l == 0) l++;
+
+      //right button
+      var r = n + 1;
+      if (r == arrElever.length) r--;
+
+
+      var node = document.getElementById("larr");
+      var att = document.createAttribute("onclick");
+      att.value = "javascript:createStudentTableNoToggle(" + (l) + ")";
+      node.setAttributeNode(att);
+
+      node = document.getElementById("rarr");
+      att = document.createAttribute("onclick");
+      att.value = "javascript:createStudentTableNoToggle(" + (r) + ")";
+      node.setAttributeNode(att);
+    }
+
     function makeElevGradebook(myArray, n) {
-      var result = "<h1>" + myArray[n][0] + " " + myArray[n][1] + "</h1>";
+      //var result = "<h1>" + myArray[n][0] + " " + myArray[n][1] + "</h1>";
+      var result = "";
+
+      //Show name and counter in DropDown
+      document.getElementById("DropDivButton").textContent = myArray[n][0] + " " + myArray[n][1] + " (" + n + "/" + (myArray.length - 1) + ")";
+
+      //Populate arrow buttons
+      populateArrows(n);
+
+      //Create table
       result += "<table border=1>";
-      result += "<tr><th>Oppgave</th><th>Poeng</th><th>Tilbakemelding</th></tr>";
+      result += "<tr><th style=\"width:30%\">Oppgave</th><th style=\"width:5%\">Poeng</th><th>Tilbakemelding</th></tr>";
 
       for (var j = 3; j < myArray[n].length; j++) {
         result += "<tr>";
@@ -114,8 +86,14 @@
         }
         j++;
 
-        if (typeof myArray[n][j] !== 'undefined') {
-          result += "<td>" + myArray[n][(j - 1)] + "/" + myArray[n][j] + "</td>";
+        if (myArray[n][j] !== '') {
+
+          //BK -> swap "empty" with "-"
+          if (myArray[n][j - 1] == '') {
+            result += "<td>- /" + myArray[n][j] + "</td>";
+          } else {
+            result += "<td>" + myArray[n][(j - 1)] + "/" + myArray[n][j] + "</td>";
+          }
         } else {
           result += "<td></td>";
         }
@@ -134,6 +112,8 @@
     }
 
     function Upload() {
+      arrElever = [[]];
+      arrElev = [[]];
       var fileUpload = document.getElementById("fileUpload");
       var regex = /(.csv|.txt)$/;
       if (regex.test(fileUpload.value.toLowerCase())) {
@@ -141,10 +121,14 @@
           var reader = new FileReader();
           reader.onload = function (e) {
 
-            arrElever = CSVToArray(e.target.result, ",")
+            //New CSV
+            //arrElever = CSVToArray(e.target.result, ",")
+            arrElever = CSVToArray(e.target.result)
+
 
             //Populate Dropdown
             var drop = document.getElementById("myDropdown");
+            drop.innerHTML = '';
             for (var i = 1; i < arrElever.length; i++) {
               var node = document.createElement("a");                 // Create a <li> node
               /**tt = document.createAttribute("onclick");       // Create a "class" attribute
@@ -165,6 +149,11 @@
             var DropDivVar = document.getElementById("DropDiv");
             DropDivVar.style.display = "block";
 
+            //Hide Overskrift
+            hideOverskrift();
+
+
+
           }
           reader.readAsText(fileUpload.files[0]);
         } else {
@@ -177,15 +166,19 @@
 
     function createStudentTable(i) {
       toggleDropDown();
-      document.getElementById("myInput").style.display="block";
+      createStudentTableNoToggle(i)
+    }
+
+    function createStudentTableNoToggle(i) {
+      document.getElementById("myInput").style.display = "block";
       var dvCSV = document.getElementById("dvCSV");
       dvCSV.innerHTML = makeElevGradebook(arrElever, i);
-      myFunction()
+      tableSearch()
     }
 
     //Search field
 
-    function myFunction() {
+    function tableSearch() {
       // Declare variables
       var input, filter, table, tr, td, i, txtValue;
       input = document.getElementById("myInput");
@@ -211,6 +204,10 @@
 
     function toggleDropDown() {
       document.getElementById("myDropdown").classList.toggle("show");
+    }
+
+    function hideOverskrift() {
+      document.getElementById("overskrift").style.display = "none";
     }
 
     function filterFunction() {
@@ -339,15 +336,20 @@
   <input type="file" id="fileUpload" />
   <input type="button" id="upload" value="Upload" onclick="Upload()" />
   <hr />
+
   <div id="DropDiv" class="dropdown" style="display:none">
-    <button id="DropDivButton" onclick="toggleDropDown()" class="dropbtn">Vel elev</button>
+    <button id="DropDivButton" onclick="toggleDropDown()" class="dropbtn" style="width: 350px;">Vel elev</button>
+    <button id="larr" class="dropbtn">&larr;</button>
+    <button id="rarr" class="dropbtn">&rarr;</button>
     <div id="myDropdown" class="dropdown-content">
       <!--input type="text" placeholder="Search.." id="myInputDrop" onkeyup="filterFunction()"-->
     </div>
+
   </div>
+
   <hr />
 
-  <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Filter etter fag.." style="display:none">
+  <input type="text" id="myInput" onkeyup="tableSearch()" placeholder="Filter etter fag.." style="display:none">
   <div id="dvCSV">
   </div>
 </body>
