@@ -328,6 +328,22 @@
     .show {
       display: block;
     }
+
+    .footer {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background-color: #3e8e41;
+      color: white;
+      text-align: left;
+    }
+
+    .footer a{
+      color: white;
+    }
+
+
   </style>
 </head>
 
@@ -351,6 +367,9 @@
 
   <input type="text" id="myInput" onkeyup="tableSearch()" placeholder="Filter etter fag.." style="display:none">
   <div id="dvCSV">
+  </div>
+  <div class="footer">
+    <p><a href="https://github.com/moyepedagog/gradebook" target="_blank">Gradebook til Teams (veiledning)</a></p>
   </div>
 </body>
 
