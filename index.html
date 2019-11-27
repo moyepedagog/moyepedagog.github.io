@@ -329,7 +329,37 @@
       display: block;
     }
 
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content {
+      flex: 1 0 auto;
+    }
+
     .footer {
+      flex-shrink: 0;
+
+      width: 100%;
+      background-color: #3e8e41;
+      color: white;
+      text-align: left;
+    }
+
+    .footer a {
+      color: white;
+    }
+
+    /**
+  
+    .footer {
+      margin-top: 60px;
       position: fixed;
       left: 0;
       bottom: 0;
@@ -342,46 +372,81 @@
     .footer a {
       color: white;
     }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    #container {
+      min-height: 100%;
+      position: relative;
+    }
+
+    #header {
+      background: #ff0;
+      padding: 10px;
+    }
+
+    #body {
+      padding: 10px;
+      padding-bottom: 60px;
+
+
+      
+    } **/
+    /**
+    #footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 60px;
+      background-color: #3e8e41;
+      color: white;
+
+    }
+
+    **/
   </style>
   <meta charset="UTF-8">
 </head>
 
 <body>
-  <div id="overskrift">
-    <h1>Velg en fil fra Teams</h1>
-    <p>
-      1. Åpne "Oppgaver"-verktøy: <br>
+  <div class="content">
+    <div id="overskrift">
+      <h1>Velg en fil fra Teams</h1>
+      <h2>1. Åpne "Oppgaver"-verktøy:</h2>>
       <img style="width:800px" src="https://moyepedagog.github.io/gb1.png" alt="oppgaave verktoey">
-    </p>
-    <p>
-      2. Vel "Eksporter til Excel": <br>
+      <h2>2. Vel "Eksporter til Excel": </h2>
       <img style="width:800px" src="https://moyepedagog.github.io/gb2.png" alt="eksporter til excel">
-    </p>
-    <p>
-      3. Vel fila som du har lastet ned da du har trykket på "Eksporter til Excel". Den skulle ligge i mappen "Nedlastinger": <br>
-    </p>
-  </div>
-
-
-
-  <input type="file" id="fileUpload" />
-  <input type="button" id="upload" value="Importer elever" onclick="Upload()" />
-  <hr />
-
-  <div id="DropDiv" class="dropdown" style="display:none">
-    <button id="DropDivButton" onclick="toggleDropDown()" class="dropbtn" style="width: 350px;">Vel elev</button>
-    <button id="larr" class="dropbtn">&larr;</button>
-    <button id="rarr" class="dropbtn">&rarr;</button>
-    <div id="myDropdown" class="dropdown-content">
-      <!--input type="text" placeholder="Search.." id="myInputDrop" onkeyup="filterFunction()"-->
+      <h2>
+        3. Vel fila som du har lastet ned da du har trykket på "Eksporter til Excel". Den skulle ligge i mappen
+        "Nedlastinger": </h2>
     </div>
 
-  </div>
 
-  <hr />
 
-  <input type="text" id="myInput" onkeyup="tableSearch()" placeholder="Filter etter fag.." style="display:none">
-  <div id="dvCSV">
+    <input type="file" id="fileUpload" />
+    <input type="button" id="upload" value="Importer elever" onclick="Upload()" />
+    <hr />
+
+    <div id="DropDiv" class="dropdown" style="display:none">
+      <button id="DropDivButton" onclick="toggleDropDown()" class="dropbtn" style="width: 350px;">Vel elev</button>
+      <button id="larr" class="dropbtn">&larr;</button>
+      <button id="rarr" class="dropbtn">&rarr;</button>
+      <div id="myDropdown" class="dropdown-content">
+        <!--input type="text" placeholder="Search.." id="myInputDrop" onkeyup="filterFunction()"-->
+      </div>
+
+    </div>
+
+    <hr />
+
+    <input type="text" id="myInput" onkeyup="tableSearch()" placeholder="Filter etter fag.." style="display:none">
+    <div id="dvCSV">
+    </div>
   </div>
   <div class="footer">
     <p><a href="https://github.com/moyepedagog/gradebook" target="_blank">Gradebook til Teams (veiledning)</a></p>
